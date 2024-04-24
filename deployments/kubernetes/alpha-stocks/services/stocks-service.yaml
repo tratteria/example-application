@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: stocks
+  name: stocks
+  namespace: alpha-stocks-dev
+spec:
+  ports:
+    - name: "8070"
+      port: 8070
+      targetPort: 8070
+  selector:
+    io.kompose.service: stocks
