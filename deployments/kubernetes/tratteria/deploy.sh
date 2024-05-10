@@ -1,8 +1,3 @@
-# Building Tratteria images
-echo "\nBuilding Tratteria Image...\n"
-
-docker build -t tratteria:latest -f ../../../../service/Dockerfile ../../../../service
-
 # Applying the Tratteria Configurations
 echo "\nApplying the Tratteria Service Configurations...\n"
 

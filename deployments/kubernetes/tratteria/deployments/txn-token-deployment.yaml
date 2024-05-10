@@ -40,9 +40,8 @@ spec:
                 secretKeyRef:
                   name: access-evaluation-api-authentication
                   key: ACCESS_EVALUATION_API_BEARER_TOKEN
-          image: tratteria
+          image: ghcr.io/tratteria/tratteria:latest
           name: tratteria
-          imagePullPolicy: Never
           args: ["/app/config/config.yaml"]
           ports:
             - containerPort: 9090
@@ -62,3 +61,5 @@ spec:
         - name: config-volume
           configMap:
             name: config
+      imagePullSecrets:
+        - name: github-registry-secret
