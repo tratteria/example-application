@@ -36,7 +36,7 @@ func (h *Handlers) OrderHandler(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("Order request received.")
 
 	txnToken := r.Header.Get("Txn-Token")
-	
+
 	ctx := context.WithValue(r.Context(), common.TXN_TOKEN_CONTEXT_KEY, txnToken)
 
 	var orderRequest OrderRequest
