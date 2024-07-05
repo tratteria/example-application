@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"strconv"
 	"time"
 
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/trats"
 	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/go-spiffe/v2/workloadapi"
 )
+
+const JWTSourceTimeout = 15 * time.Second
 
 type spiffeIDs struct {
 	Gateway spiffeid.ID
@@ -19,20 +19,9 @@ type spiffeIDs struct {
 	Stocks  spiffeid.ID
 }
 
-type txnTokenKeys struct {
-	JWKS string
-}
-
-type toggles struct {
-	SpireToggle    bool
-	TxnTokenToggle bool
-}
-
 type OrderConfig struct {
 	StocksServiceURL *url.URL
 	SpiffeIDs        *spiffeIDs
-	TxnTokenKeys     *txnTokenKeys
-	Toggles          *toggles
 }
 
 func GetAppConfig() *OrderConfig {
@@ -43,18 +32,11 @@ func GetAppConfig() *OrderConfig {
 			Order:   spiffeid.RequireFromString(getEnv("ORDER_SERVICE_SPIFFE_ID")),
 			Stocks:  spiffeid.RequireFromString(getEnv("STOCKS_SERVICE_SPIFFE_ID")),
 		},
-		TxnTokenKeys: &txnTokenKeys{
-			JWKS: getEnv("TTS_JWKS"),
-		},
-		Toggles: &toggles{
-			SpireToggle:    getBoolEnv("ENABLE_SPIRE"),
-			TxnTokenToggle: getBoolEnv("ENABLE_TXN_TOKEN"),
-		},
 	}
 }
 
 func GetSpireJwtSource() (*workloadapi.JWTSource, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), JWTSourceTimeout)
 	defer cancel()
 
 	jwtSource, err := workloadapi.NewJWTSource(ctx)
@@ -63,20 +45,6 @@ func GetSpireJwtSource() (*workloadapi.JWTSource, error) {
 	}
 
 	return jwtSource, nil
-}
-
-func GetTraTsVerifier() *trats.Verifier {
-	return trats.NewVerifier(getEnv("TRATS_AUDIENCE"),
-		getEnv("TRATS_ISSUER"))
-}
-
-func getBoolEnv(key string) bool {
-	val, err := strconv.ParseBool(getEnv(key))
-	if err != nil {
-		panic("Error parsing boolean environment variable " + key + ": " + err.Error())
-	}
-
-	return val
 }
 
 func getEnv(key string) string {

@@ -1,0 +1,23 @@
+apiVersion: tratteria.io/v1alpha1
+kind: TraT
+metadata:
+  name: stock-trade-api-trat
+  namespace: alpha-stocks
+spec:
+  endpoint: "/api/order"
+  method: "POST"
+  purp: stock-trade
+  azdMapping:
+    stockId:
+      required: true
+      value: "${body.stockId}"
+    action:
+      required: true
+      value: "${body.orderType}"
+    quantity:
+      required: true
+      value: "${body.quantity}"
+  services:
+    - name: order
+    - name: stocks
+      endpoint: "/internal/stocks"

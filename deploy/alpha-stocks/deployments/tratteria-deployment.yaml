@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tratteria
+  namespace: alpha-stocks
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tratteria
+  template:
+    metadata:
+      labels:
+        app: tratteria
+    spec:
+      serviceAccountName: tratteria-service-account
+      containers:
+        - image: tratteria
+          name: tratteria
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /run/spire/sockets
+              name: spire-agent-socket
+              readOnly: true
+          env:
+            - name: TCONFIGD_URL
+              value: http://tconfigd.tratteria-system.svc.cluster.local:9060
+            - name: SPIFFE_ID
+              value: spiffe://alphastocks.com/tratteria
+            - name: SPIFFE_ENDPOINT_SOCKET
+              value: unix:///run/spire/sockets/agent.sock
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+      restartPolicy: Always
+      volumes:
+        - name: spire-agent-socket
+          hostPath:
+            path: /run/spire/sockets
+            type: Directory

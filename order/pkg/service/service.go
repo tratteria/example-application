@@ -12,7 +12,6 @@ import (
 
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/common"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/config"
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/middleware"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/ordererrors"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/spiffe/go-spiffe/v2/svid/jwtsvid"
@@ -59,14 +58,14 @@ type OrderDetails struct {
 
 type UpdateRequest struct {
 	OrderType OrderType `json:"orderType"`
-	StockID   int       `json:"stockID"`
+	StockId   int       `json:"stockId"`
 	Quantity  int       `json:"quantity"`
 }
 
 func (s *Service) Order(ctx context.Context, username string, stockID int, orderType OrderType, quantity int) (OrderDetails, error) {
 	updateRequest := UpdateRequest{
 		OrderType: orderType,
-		StockID:   stockID,
+		StockId:   stockID,
 		Quantity:  quantity,
 	}
 
@@ -103,7 +102,8 @@ func (s *Service) Order(ctx context.Context, username string, stockID int, order
 
 	req.Header.Set("Authorization", "Bearer "+svid.Marshal())
 
-	if txnToken, ok := ctx.Value(middleware.TXN_TOKEN_CONTEXT_KEY).(string); ok {
+	txnToken, ok := ctx.Value(common.TXN_TOKEN_CONTEXT_KEY).(string)
+	if ok {
 		req.Header.Set("txn-token", txnToken)
 	}
 

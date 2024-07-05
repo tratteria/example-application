@@ -1,9 +1,23 @@
 package common
 
 import (
+	"net/http"
 	"net/url"
 	"path"
 )
+
+type HttpMethod string
+
+const (
+	Get     HttpMethod = http.MethodGet
+	Post    HttpMethod = http.MethodPost
+	Put     HttpMethod = http.MethodPut
+	Delete  HttpMethod = http.MethodDelete
+	Patch   HttpMethod = http.MethodPatch
+	Options HttpMethod = http.MethodOptions
+)
+
+var HttpMethodList = []HttpMethod{Get, Post, Put, Delete, Patch, Options}
 
 type IDTokenClaims struct {
 	Email string `json:"email"`

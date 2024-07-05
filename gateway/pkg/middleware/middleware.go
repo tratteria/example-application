@@ -10,8 +10,6 @@ import (
 	"golang.org/x/oauth2"
 
 	"go.uber.org/zap"
-
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/gateway/pkg/middleware/txntokenmiddleware"
 )
 
 func CombineMiddleware(middleware ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
@@ -24,12 +22,16 @@ func CombineMiddleware(middleware ...func(http.Handler) http.Handler) func(http.
 	}
 }
 
-func GetMiddleware(oauth2Config oauth2.Config, oidcProvider *oidc.Provider, targetServiceSpiffeID spiffeid.ID, spireJwtSource *workloadapi.JWTSource, txnTokenServiceURL *url.URL, txnTokenServiceSpiffeID spiffeid.ID, httpClient *http.Client, logger *zap.Logger) func(http.Handler) http.Handler {
+func GetMiddleware(oauth2Config oauth2.Config, oidcProvider *oidc.Provider, targetServiceSpiffeID spiffeid.ID, spireJwtSource *workloadapi.JWTSource, tratteriaURL *url.URL, tratteriaSpiffeID spiffeid.ID, traTToggle bool, httpClient *http.Client, logger *zap.Logger) func(http.Handler) http.Handler {
 	middlewareList := []func(http.Handler) http.Handler{
 		getAuthenticationMiddleware(oauth2Config, oidcProvider, logger),
-		txntokenmiddleware.GetTxnTokenMiddleware(txnTokenServiceURL, httpClient, spireJwtSource, txnTokenServiceSpiffeID, logger),
-		getJwtSvidMiddleware(targetServiceSpiffeID, spireJwtSource, logger),
 	}
+
+	if traTToggle {
+		middlewareList = append(middlewareList, GetTxnTokenMiddleware(tratteriaURL, httpClient, spireJwtSource, tratteriaSpiffeID, logger))
+	}
+
+	middlewareList = append(middlewareList, getJwtSvidMiddleware(targetServiceSpiffeID, spireJwtSource, logger))
 
 	return CombineMiddleware(middlewareList...)
 }

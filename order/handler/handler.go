@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
 
+	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/common"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/ordererrors"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/service"
 	"github.com/gorilla/mux"
@@ -33,6 +35,10 @@ type OrderRequest struct {
 func (h *Handlers) OrderHandler(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("Order request received.")
 
+	txnToken := r.Header.Get("Txn-Token")
+	
+	ctx := context.WithValue(r.Context(), common.TXN_TOKEN_CONTEXT_KEY, txnToken)
+
 	var orderRequest OrderRequest
 
 	username := r.Header.Get("alpha-stock-user-name")
@@ -50,7 +56,7 @@ func (h *Handlers) OrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderDetails, err := h.Service.Order(r.Context(), username, orderRequest.StockID, orderRequest.OrderType, orderRequest.Quantity)
+	orderDetails, err := h.Service.Order(ctx, username, orderRequest.StockID, orderRequest.OrderType, orderRequest.Quantity)
 	if err != nil {
 		h.Logger.Error("Failed to process stock order.", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

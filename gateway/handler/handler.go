@@ -29,8 +29,8 @@ func SetupRoutes(cfg *config.GatewayConfig, oauth2Config oauth2.Config, oidcProv
 	stocksProxy := proxy.NewReverseProxy(cfg.StocksServiceURL, logger)
 	orderProxy := proxy.NewReverseProxy(cfg.OrderServiceURL, logger)
 
-	router.PathPrefix("/api/stocks").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Stocks, spireJwtSource, cfg.TxnTokenServiceURL, cfg.SpiffeIDs.TxnToken, httpClient, logger)(stocksProxy))
-	router.PathPrefix("/api/order").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Order, spireJwtSource, cfg.TxnTokenServiceURL, cfg.SpiffeIDs.TxnToken, httpClient, logger)(orderProxy))
+	router.PathPrefix("/api/stocks").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Stocks, spireJwtSource, cfg.TratteriaURL, cfg.SpiffeIDs.Tratteria, cfg.TraTToggle, httpClient, logger)(stocksProxy))
+	router.PathPrefix("/api/order").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Order, spireJwtSource, cfg.TratteriaURL, cfg.SpiffeIDs.Tratteria, cfg.TraTToggle, httpClient, logger)(orderProxy))
 
 	router.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
 		handleLogout(w)
@@ -69,8 +69,8 @@ func handleOidcCodeExchange(w http.ResponseWriter, r *http.Request, logger *zap.
 
 	ctx := r.Context()
 
-    tokenExchangeCtx, cancelTokenExchange := context.WithTimeout(ctx, 5*time.Second)
-    defer cancelTokenExchange()
+	tokenExchangeCtx, cancelTokenExchange := context.WithTimeout(ctx, 5*time.Second)
+	defer cancelTokenExchange()
 
 	oauth2Token, err := oauth2Config.Exchange(tokenExchangeCtx, dexCodeExchangeRequest.Code)
 	if err != nil {
@@ -94,7 +94,7 @@ func handleOidcCodeExchange(w http.ResponseWriter, r *http.Request, logger *zap.
 	verifier := oidcProvider.Verifier(oidcConfig)
 
 	verificationCtx, cancelVerification := context.WithTimeout(ctx, 5*time.Second)
-    defer cancelVerification()
+	defer cancelVerification()
 
 	idToken, err := verifier.Verify(verificationCtx, rawIDToken)
 	if err != nil {

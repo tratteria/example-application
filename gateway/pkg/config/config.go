@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/coreos/go-oidc"
@@ -15,32 +16,35 @@ import (
 )
 
 const OIDC_PROVIDER_INITILIZATION_MAX_RETRIES = 5
+const JWTSourceTimeout = 15 * time.Second
 
 type spiffeIDs struct {
-	TxnToken spiffeid.ID
-	Gateway  spiffeid.ID
-	Order    spiffeid.ID
-	Stocks   spiffeid.ID
+	Tratteria spiffeid.ID
+	Gateway   spiffeid.ID
+	Order     spiffeid.ID
+	Stocks    spiffeid.ID
 }
 
 type GatewayConfig struct {
-	TxnTokenServiceURL *url.URL
-	StocksServiceURL   *url.URL
-	OrderServiceURL    *url.URL
-	SpiffeIDs          *spiffeIDs
+	TratteriaURL     *url.URL
+	StocksServiceURL *url.URL
+	OrderServiceURL  *url.URL
+	SpiffeIDs        *spiffeIDs
+	TraTToggle       bool
 }
 
 func GetAppConfig() *GatewayConfig {
 	return &GatewayConfig{
-		TxnTokenServiceURL: parseURL(getEnv("TTS_URL")),
-		StocksServiceURL:   parseURL(getEnv("STOCKS_SERVICE_URL")),
-		OrderServiceURL:    parseURL(getEnv("ORDER_SERVICE_URL")),
+		TratteriaURL:     parseURL(getEnv("TRATTERIA_URL")),
+		StocksServiceURL: parseURL(getEnv("STOCKS_SERVICE_URL")),
+		OrderServiceURL:  parseURL(getEnv("ORDER_SERVICE_URL")),
 		SpiffeIDs: &spiffeIDs{
-			TxnToken: spiffeid.RequireFromString(getEnv("TTS_SPIFFE_ID")),
-			Gateway:  spiffeid.RequireFromString(getEnv("GATEWAY_SERVICE_SPIFFE_ID")),
-			Order:    spiffeid.RequireFromString(getEnv("ORDER_SERVICE_SPIFFE_ID")),
-			Stocks:   spiffeid.RequireFromString(getEnv("STOCKS_SERVICE_SPIFFE_ID")),
+			Tratteria: spiffeid.RequireFromString(getEnv("TRATTERIA_SPIFFE_ID")),
+			Gateway:   spiffeid.RequireFromString(getEnv("GATEWAY_SERVICE_SPIFFE_ID")),
+			Order:     spiffeid.RequireFromString(getEnv("ORDER_SERVICE_SPIFFE_ID")),
+			Stocks:    spiffeid.RequireFromString(getEnv("STOCKS_SERVICE_SPIFFE_ID")),
 		},
+		TraTToggle: getBoolEnv("ENABLE_TRATS"),
 	}
 }
 
@@ -85,7 +89,7 @@ func GetOIDCProvider(logger *zap.Logger) *oidc.Provider {
 }
 
 func GetSpireJwtSource() (*workloadapi.JWTSource, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), JWTSourceTimeout)
 	defer cancel()
 
 	jwtSource, err := workloadapi.NewJWTSource(ctx)
@@ -94,6 +98,15 @@ func GetSpireJwtSource() (*workloadapi.JWTSource, error) {
 	}
 
 	return jwtSource, nil
+}
+
+func getBoolEnv(key string) bool {
+	val, err := strconv.ParseBool(getEnv(key))
+	if err != nil {
+		panic("Error parsing boolean environment variable " + key + ": " + err.Error())
+	}
+
+	return val
 }
 
 func getEnv(key string) string {
@@ -110,6 +123,6 @@ func parseURL(rawurl string) *url.URL {
 	if err != nil {
 		panic(fmt.Sprintf("Error parsing URL %s: %v", rawurl, err))
 	}
-	
+
 	return parsedURL
 }
