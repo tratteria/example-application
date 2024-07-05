@@ -32,7 +32,7 @@ export class StockService {
   }
 
   getStockDetails(stockId: string): Observable<Stock | null> {
-    return this.http.get<Stock>(`${this.stockAPIURL}/${stockId}`).pipe(
+    return this.http.get<Stock>(`${this.stockAPIURL}/details/${stockId}`).pipe(
       map(response => {
         return response;
       }),

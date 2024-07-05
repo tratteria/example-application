@@ -34,7 +34,7 @@ type StocksSearchResponse struct {
 
 type UpdateRequest struct {
 	OrderType service.UpdateType `json:"orderType"`
-	StockID   int                `json:"stockID"`
+	StockId   int                `json:"stockId"`
 	Quantity  int                `json:"quantity"`
 }
 
@@ -165,10 +165,10 @@ func (h *Handlers) UpdateUserStockHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	stock, err := h.Service.GetStockDetails(username, updateRequest.StockID)
+	stock, err := h.Service.GetStockDetails(username, updateRequest.StockId)
 	if err != nil {
 		if errors.Is(err, stockserrors.ErrStockNotFound) {
-			h.Logger.Error("Stock provided in update-user-stock request not found.", zap.Int("stock-id", updateRequest.StockID))
+			h.Logger.Error("Stock provided in update-user-stock request not found.", zap.Int("stock-id", updateRequest.StockId))
 			http.Error(w, "Stock not found", http.StatusBadRequest)
 
 			return

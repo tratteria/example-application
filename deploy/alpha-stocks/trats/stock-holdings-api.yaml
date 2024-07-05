@@ -1,0 +1,11 @@
+# apiVersion: tratteria.io/v1alpha1
+# kind: TraT
+# metadata:
+#   name: stock-holdings-api-trat
+#   namespace: alpha-stocks
+# spec:
+#   endpoint: "/api/stocks/holdings"
+#   method: "GET"
+#   purp: stock-holdings
+#   services:
+#     - name: stocks

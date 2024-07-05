@@ -1,0 +1,15 @@
+apiVersion: tratteria.io/v1alpha1
+kind: TraT
+metadata:
+  name: trade-details-api-trat
+  namespace: alpha-stocks
+spec:
+  endpoint: "/api/order/{#transactionNumber}"
+  method: "GET"
+  purp: stock-details
+  azdMapping:
+    transactionNumber:
+      required: true
+      value: "${transactionNumber}"
+  services:
+    - name: order

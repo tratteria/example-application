@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tconfigd-service-account-role
+rules:
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+  - apiGroups: ["tratteria.io"]
+    resources: ["trats", "tratteriaconfigs"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["tratteria.io"]
+    resources: ["trats/status", "tratteriaconfigs/status"]
+    verbs: ["update"]

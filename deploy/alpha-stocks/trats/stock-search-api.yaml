@@ -1,0 +1,15 @@
+apiVersion: tratteria.io/v1alpha1
+kind: TraT
+metadata:
+  name: stock-search-api-trat
+  namespace: alpha-stocks
+spec:
+  endpoint: "/api/stocks/search"
+  method: "GET"
+  purp: stock-search
+  azdMapping:
+    query:
+      required: true
+      value: "${queryParameters.query}"
+  services:
+    - name: stocks

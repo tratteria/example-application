@@ -11,3 +11,7 @@ func AppendPathToURL(baseURL *url.URL, appendPath string) *url.URL {
 
 	return &newURL
 }
+
+type ContextKey string
+
+const TXN_TOKEN_CONTEXT_KEY ContextKey = "txn_token"

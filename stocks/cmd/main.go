@@ -15,8 +15,6 @@ import (
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/stocks/pkg/database"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/stocks/pkg/middleware"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/stocks/pkg/service"
-
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/stocks/pkg/trats"
 )
 
 type App struct {
@@ -24,7 +22,6 @@ type App struct {
 	DB             *sql.DB
 	Config         *config.StocksConfig
 	SpireJwtSource *workloadapi.JWTSource
-	TraTsVerifer   *trats.Verifier
 	Logger         *zap.Logger
 }
 
@@ -58,18 +55,15 @@ func main() {
 
 	defer spireJwtSource.Close()
 
-	traTsVerifier := config.GetTraTsVerifier()
-
 	app := &App{
 		Router:         mux.NewRouter(),
 		DB:             db,
 		Config:         appConfig,
 		SpireJwtSource: spireJwtSource,
-		TraTsVerifer:   traTsVerifier,
 		Logger:         logger,
 	}
 
-	middleware := middleware.GetMiddleware(appConfig, app.SpireJwtSource, app.TraTsVerifer, app.Logger)
+	middleware := middleware.GetMiddleware(appConfig, app.SpireJwtSource, app.Logger)
 
 	app.Router.Use(middleware)
 
@@ -92,6 +86,6 @@ func main() {
 func (a *App) initializeRoutes(handlers *handler.Handlers) {
 	a.Router.HandleFunc("/api/stocks/search", handlers.SearchStocksHandler).Methods("GET")
 	a.Router.HandleFunc("/api/stocks/holdings", handlers.GetUserHoldingsHandler).Methods("GET")
-	a.Router.HandleFunc("/api/stocks/{id}", handlers.GetStockDetailsHandler).Methods("GET")
+	a.Router.HandleFunc("/api/stocks/details/{id}", handlers.GetStockDetailsHandler).Methods("GET")
 	a.Router.HandleFunc("/internal/stocks", handlers.UpdateUserStockHandler).Methods("POST")
 }

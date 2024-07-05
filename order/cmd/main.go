@@ -15,7 +15,6 @@ import (
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/database"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/middleware"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/service"
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/trats"
 )
 
 type App struct {
@@ -24,7 +23,6 @@ type App struct {
 	HTTPClient     *http.Client
 	Config         *config.OrderConfig
 	SpireJwtSource *workloadapi.JWTSource
-	TraTsVerifer   *trats.Verifier
 	Logger         *zap.Logger
 }
 
@@ -58,19 +56,16 @@ func main() {
 
 	defer spireJwtSource.Close()
 
-	traTsVerifier := config.GetTraTsVerifier()
-
 	app := &App{
 		Router:         mux.NewRouter(),
 		DB:             db,
 		HTTPClient:     &http.Client{},
 		Config:         appConfig,
 		SpireJwtSource: spireJwtSource,
-		TraTsVerifer:   traTsVerifier,
 		Logger:         logger,
 	}
 
-	middleware := middleware.GetMiddleware(app.Config, app.SpireJwtSource, app.TraTsVerifer, app.Logger)
+	middleware := middleware.GetMiddleware(app.Config, app.SpireJwtSource, app.Logger)
 
 	app.Router.Use(middleware)
 

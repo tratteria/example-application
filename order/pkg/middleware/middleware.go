@@ -7,10 +7,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/config"
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/trats"
 )
-
-type contextKey string
 
 func CombineMiddleware(middleware ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
 	return func(final http.Handler) http.Handler {
@@ -22,16 +19,10 @@ func CombineMiddleware(middleware ...func(http.Handler) http.Handler) func(http.
 	}
 }
 
-func GetMiddleware(orderConfig *config.OrderConfig, spireJwtSource *workloadapi.JWTSource, traTsVerifier *trats.Verifier, logger *zap.Logger) func(http.Handler) http.Handler {
+func GetMiddleware(orderConfig *config.OrderConfig, spireJwtSource *workloadapi.JWTSource, logger *zap.Logger) func(http.Handler) http.Handler {
 	middlewareList := []func(http.Handler) http.Handler{}
 
-	if orderConfig.Toggles.SpireToggle {
-		middlewareList = append(middlewareList, spiffeMiddleware(orderConfig, spireJwtSource, logger))
-	}
-
-	if orderConfig.Toggles.TxnTokenToggle {
-		middlewareList = append(middlewareList, getTxnTokenMiddleware(traTsVerifier, orderConfig.TxnTokenKeys.JWKS, logger))
-	}
+	middlewareList = append(middlewareList, spiffeMiddleware(orderConfig, spireJwtSource, logger))
 
 	return CombineMiddleware(middlewareList...)
 }
