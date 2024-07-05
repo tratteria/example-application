@@ -10,9 +10,9 @@ import (
 func GetSpiffeAccessControlPolicies(stocksConfig *config.StocksConfig) map[spiffeid.ID]map[string][]string {
 	return map[spiffeid.ID]map[string][]string{
 		stocksConfig.SpiffeIDs.Gateway: {
-			"/api/stocks/search":   {http.MethodGet},
-			"/api/stocks/holdings": {http.MethodGet},
-			"/api/stocks/details/{id}":     {http.MethodGet},
+			"/api/stocks/search":       {http.MethodGet},
+			"/api/stocks/holdings":     {http.MethodGet},
+			"/api/stocks/details/{id}": {http.MethodGet},
 		},
 		stocksConfig.SpiffeIDs.Order: {
 			"/internal/stocks": {http.MethodPost},
