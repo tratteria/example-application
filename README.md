@@ -71,9 +71,15 @@ As shown in the diagram above, the API Gateway integrates with the Tratteria ser
 
 ## Backend
 
-Ensure Kubernetes is installed and correctly configured on your machine before executing these commands. 
+Ensure Kubernetes is installed and correctly configured on your machine before executing these commands.
 
-- Navigate to the deployments/kubernetes directory and run:
+- Navigate to the build directory and run the below command to build the services images:
+
+```bash
+./build.sh
+```
+
+- Navigate to the deployments/kubernetes directory and run the below command to deploy the services:
 
 ```bash
 ./deploy.sh
