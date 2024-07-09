@@ -22,7 +22,7 @@ spec:
           args: ["/etc/tconfigd/config/config.yaml"]
           imagePullPolicy: Never
           ports:
-            - containerPort: 9060
+            - containerPort: 8443
               protocol: TCP
             - containerPort: 443
               protocol: TCP

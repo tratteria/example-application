@@ -5,9 +5,12 @@ metadata:
   namespace: alpha-stocks
 spec:
   ports:
-    - name: "9090"
-      port: 9090
-      targetPort: 9090
+    - name: "http"
+      port: 80
+      targetPort: 80
+    - name: "https"
+      port: 443
+      targetPort: 443
   selector:
     app: tratteria
     

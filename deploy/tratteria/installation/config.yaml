@@ -1,5 +1,6 @@
 enableTratInterception: "true" # Enable or disable incoming requests interception for TraT verification
-agentApiPort: "9040" # Port number for the tratteria agent API
+agentHttpsApiPort: "9040" # Port number for the tratteria agent HTTPS APIs
+agentHttpApiPort: "9030" # Port number for the tratteria agent HTTP APIs
 agentInterceptorPort: "9050" # Port number for the tratteria agent incoming requests interceptor
 spiffeEndpointSocket: "unix:///run/spire/sockets/agent.sock" # Don't change this if you are using tconfigd SPIRE installation
-tconfigdSpiffeId: "spiffe://tratteria.io/tconfigd" # Don't change this if you are using tconfigd SPIRE installation
+tratteriaSpiffeId: "spiffe://alphastocks.com/tratteria" # Replace "<trust-domain>" with your trust domain

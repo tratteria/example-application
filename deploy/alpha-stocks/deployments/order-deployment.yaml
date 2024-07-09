@@ -1,32 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.32.0 (HEAD)
-  labels:
-    io.kompose.service: order
   name: order
   namespace: alpha-stocks
 spec:
   replicas: 2
   selector:
     matchLabels:
-      io.kompose.service: order
-  strategy:
-    type: Recreate
+      app: order
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.32.0 (HEAD)
         tratteria/inject-sidecar: "true"
-        tratteria/service-name: "order"
         tratteria/service-port: "8090"
       labels:
-        io.kompose.network/docker-compose-default: "true"
-        io.kompose.service: order
-      namespace: alpha-stocks
+        app: order
     spec:
       serviceAccountName: order-service-account
       containers:

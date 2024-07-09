@@ -6,9 +6,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - name: rules
-      port: 9060
-      targetPort: 9060
+    - name: api
+      port: 8443
+      targetPort: 8443
       protocol: TCP
     - name: webhook
       port: 443
