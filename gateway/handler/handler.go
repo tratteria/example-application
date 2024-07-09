@@ -23,14 +23,14 @@ type DexCodeExchangeRequest struct {
 	Code string `json:"code"`
 }
 
-func SetupRoutes(cfg *config.GatewayConfig, oauth2Config oauth2.Config, oidcProvider *oidc.Provider, spireJwtSource *workloadapi.JWTSource, httpClient *http.Client, logger *zap.Logger) *mux.Router {
+func SetupRoutes(cfg *config.GatewayConfig, oauth2Config oauth2.Config, oidcProvider *oidc.Provider, spiffeJwtSource *workloadapi.JWTSource, x509Source *workloadapi.X509Source, logger *zap.Logger) *mux.Router {
 	router := mux.NewRouter()
 
 	stocksProxy := proxy.NewReverseProxy(cfg.StocksServiceURL, logger)
 	orderProxy := proxy.NewReverseProxy(cfg.OrderServiceURL, logger)
 
-	router.PathPrefix("/api/stocks").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Stocks, spireJwtSource, cfg.TratteriaURL, cfg.SpiffeIDs.Tratteria, cfg.TraTToggle, httpClient, logger)(stocksProxy))
-	router.PathPrefix("/api/order").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Order, spireJwtSource, cfg.TratteriaURL, cfg.SpiffeIDs.Tratteria, cfg.TraTToggle, httpClient, logger)(orderProxy))
+	router.PathPrefix("/api/stocks").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Stocks, spiffeJwtSource, x509Source, cfg.TratteriaURL, cfg.SpiffeIDs.Tratteria, cfg.TraTToggle, logger)(stocksProxy))
+	router.PathPrefix("/api/order").Handler(middleware.GetMiddleware(oauth2Config, oidcProvider, cfg.SpiffeIDs.Order, spiffeJwtSource, x509Source, cfg.TratteriaURL, cfg.SpiffeIDs.Tratteria, cfg.TraTToggle, logger)(orderProxy))
 
 	router.HandleFunc("/api/logout", func(w http.ResponseWriter, r *http.Request) {
 		handleLogout(w)

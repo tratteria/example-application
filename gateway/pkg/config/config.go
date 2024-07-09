@@ -10,7 +10,6 @@ import (
 
 	"github.com/coreos/go-oidc"
 	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 )
@@ -20,7 +19,6 @@ const JWTSourceTimeout = 15 * time.Second
 
 type spiffeIDs struct {
 	Tratteria spiffeid.ID
-	Gateway   spiffeid.ID
 	Order     spiffeid.ID
 	Stocks    spiffeid.ID
 }
@@ -40,7 +38,6 @@ func GetAppConfig() *GatewayConfig {
 		OrderServiceURL:  parseURL(getEnv("ORDER_SERVICE_URL")),
 		SpiffeIDs: &spiffeIDs{
 			Tratteria: spiffeid.RequireFromString(getEnv("TRATTERIA_SPIFFE_ID")),
-			Gateway:   spiffeid.RequireFromString(getEnv("GATEWAY_SERVICE_SPIFFE_ID")),
 			Order:     spiffeid.RequireFromString(getEnv("ORDER_SERVICE_SPIFFE_ID")),
 			Stocks:    spiffeid.RequireFromString(getEnv("STOCKS_SERVICE_SPIFFE_ID")),
 		},
@@ -86,18 +83,6 @@ func GetOIDCProvider(logger *zap.Logger) *oidc.Provider {
 	logger.Error(fmt.Sprintf("Failed to connect to the OIDC provider after %d attempts", OIDC_PROVIDER_INITILIZATION_MAX_RETRIES))
 
 	panic(fmt.Sprintf("failed to connect to the OIDC provider after %d attempts", OIDC_PROVIDER_INITILIZATION_MAX_RETRIES))
-}
-
-func GetSpireJwtSource() (*workloadapi.JWTSource, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), JWTSourceTimeout)
-	defer cancel()
-
-	jwtSource, err := workloadapi.NewJWTSource(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return jwtSource, nil
 }
 
 func getBoolEnv(key string) bool {
