@@ -1,33 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.32.0 (HEAD)
-  labels:
-    io.kompose.service: gateway
   name: gateway
   namespace: alpha-stocks
 spec:
   replicas: 3
   selector:
     matchLabels:
-      io.kompose.service: gateway
+      app: gateway
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.32.0 (HEAD)
       labels:
-        io.kompose.network/docker-compose-default: "true"
-        io.kompose.service: gateway
-      namespace: alpha-stocks
+        app: gateway
     spec:
       serviceAccountName: gateway-service-account
       containers:
         - env:
             - name: TRATTERIA_URL
-              value: http://tratteria:9090
+              value: https://tratteria:443
             - name: ORDER_SERVICE_URL
               value: http://order:8090
             - name: STOCKS_SERVICE_URL
@@ -46,8 +36,6 @@ spec:
               value: unix:///run/spire/sockets/agent.sock
             - name: TRATTERIA_SPIFFE_ID
               value: spiffe://alphastocks.com/tratteria
-            - name: GATEWAY_SERVICE_SPIFFE_ID
-              value: spiffe://alphastocks.com/gateway
             - name: ORDER_SERVICE_SPIFFE_ID
               value: spiffe://alphastocks.com/order
             - name: STOCKS_SERVICE_SPIFFE_ID

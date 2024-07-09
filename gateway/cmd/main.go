@@ -53,7 +53,7 @@ func main() {
 
 	defer x509Source.Close()
 
-	logger.Info("Successfully created SPIFEE x509 source.")
+	logger.Info("Successfully created SPIFFE x509 source.")
 
 	router := handler.SetupRoutes(appConfig, oauth2Config, oidcProvider, spiffeJwtSource, x509Source, logger)
 

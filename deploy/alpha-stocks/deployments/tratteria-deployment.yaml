@@ -19,7 +19,9 @@ spec:
           name: tratteria
           imagePullPolicy: Never
           ports:
-            - containerPort: 9090
+            - containerPort: 80
+              protocol: TCP
+            - containerPort: 443
               protocol: TCP
           volumeMounts:
             - mountPath: /run/spire/sockets
@@ -27,9 +29,9 @@ spec:
               readOnly: true
           env:
             - name: TCONFIGD_URL
-              value: http://tconfigd.tratteria-system.svc.cluster.local:9060
-            - name: SPIFFE_ID
-              value: spiffe://alphastocks.com/tratteria
+              value: https://tconfigd.tratteria-system.svc.cluster.local:8443
+            - name: TCONFIGD_SPIFFE_ID
+              value: spiffe://alphastocks.com/tconfigd
             - name: SPIFFE_ENDPOINT_SOCKET
               value: unix:///run/spire/sockets/agent.sock
             - name: MY_NAMESPACE
