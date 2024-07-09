@@ -22,16 +22,16 @@ func CombineMiddleware(middleware ...func(http.Handler) http.Handler) func(http.
 	}
 }
 
-func GetMiddleware(oauth2Config oauth2.Config, oidcProvider *oidc.Provider, targetServiceSpiffeID spiffeid.ID, spireJwtSource *workloadapi.JWTSource, tratteriaURL *url.URL, tratteriaSpiffeID spiffeid.ID, traTToggle bool, httpClient *http.Client, logger *zap.Logger) func(http.Handler) http.Handler {
+func GetMiddleware(oauth2Config oauth2.Config, oidcProvider *oidc.Provider, targetServiceSpiffeID spiffeid.ID, spiffeJwtSource *workloadapi.JWTSource, x509Source *workloadapi.X509Source, tratteriaURL *url.URL, tratteriaSpiffeID spiffeid.ID, traTToggle bool, logger *zap.Logger) func(http.Handler) http.Handler {
 	middlewareList := []func(http.Handler) http.Handler{
 		getAuthenticationMiddleware(oauth2Config, oidcProvider, logger),
 	}
 
 	if traTToggle {
-		middlewareList = append(middlewareList, GetTxnTokenMiddleware(tratteriaURL, httpClient, spireJwtSource, tratteriaSpiffeID, logger))
+		middlewareList = append(middlewareList, GetTxnTokenMiddleware(tratteriaURL, x509Source, tratteriaSpiffeID, logger))
 	}
 
-	middlewareList = append(middlewareList, getJwtSvidMiddleware(targetServiceSpiffeID, spireJwtSource, logger))
+	middlewareList = append(middlewareList, getJwtSvidMiddleware(targetServiceSpiffeID, spiffeJwtSource, logger))
 
 	return CombineMiddleware(middlewareList...)
 }

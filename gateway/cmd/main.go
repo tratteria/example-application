@@ -1,14 +1,18 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/gateway/handler"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/gateway/pkg/config"
+	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"go.uber.org/zap"
 )
+
+const SPIFEE_SOURCE_TIMEOUT = 15 * time.Second
 
 func main() {
 	logger, err := zap.NewProduction()
@@ -27,18 +31,31 @@ func main() {
 	oauth2Config := config.GetOauth2Config()
 	oidcProvider := config.GetOIDCProvider(logger)
 
-	spireJwtSource, err := config.GetSpireJwtSource()
+	jwtSourceCtx, cancel := context.WithTimeout(context.Background(), SPIFEE_SOURCE_TIMEOUT)
+	defer cancel()
+
+	spiffeJwtSource, err := workloadapi.NewJWTSource(jwtSourceCtx)
 	if err != nil {
-		logger.Fatal("Unable to create SPIRE JWTSource for fetching JWT-SVIDs.", zap.Error(err))
+		logger.Fatal("Unable to create SPIFEE JWTSource for fetching JWT-SVIDs.", zap.Error(err))
 	}
 
-	logger.Info("Successfully created SPIRE JWTSource for fetching JWT-SVIDs.")
+	defer spiffeJwtSource.Close()
 
-	defer spireJwtSource.Close()
+	logger.Info("Successfully created SPIFEE JWTSource for fetching JWT-SVIDs.")
 
-	httpClient := &http.Client{}
+	x509SrcCtx, cancel := context.WithTimeout(context.Background(), SPIFEE_SOURCE_TIMEOUT)
+	defer cancel()
 
-	router := handler.SetupRoutes(appConfig, oauth2Config, oidcProvider, spireJwtSource, httpClient, logger)
+	x509Source, err := workloadapi.NewX509Source(x509SrcCtx)
+	if err != nil {
+		logger.Fatal("Unable to create X509Source: " + err.Error())
+	}
+
+	defer x509Source.Close()
+
+	logger.Info("Successfully created SPIFEE x509 source.")
+
+	router := handler.SetupRoutes(appConfig, oauth2Config, oidcProvider, spiffeJwtSource, x509Source, logger)
 
 	srv := &http.Server{
 		Addr:         "0.0.0.0:30000",

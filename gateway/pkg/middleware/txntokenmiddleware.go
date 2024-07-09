@@ -2,14 +2,12 @@ package middleware
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"time"
 
 	"net"
 	"strings"
@@ -17,7 +15,7 @@ import (
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/gateway/pkg/common"
 
 	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/svid/jwtsvid"
+	"github.com/spiffe/go-spiffe/v2/spiffetls/tlsconfig"
 	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"go.uber.org/zap"
 )
@@ -126,7 +124,7 @@ func convertHeaderToJson(headers http.Header) (json.RawMessage, error) {
 	for key, values := range headers {
 		headerMap[key] = values[0]
 	}
-	
+
 	return convertMapToJson(headerMap)
 }
 
@@ -163,7 +161,13 @@ func getRequestDetails(r *http.Request) (*RequestDetails, error) {
 	return details, nil
 }
 
-func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, httpClient *http.Client, spireJwtSource *workloadapi.JWTSource, txnTokenServiceSpiffeID spiffeid.ID, logger *zap.Logger) func(http.Handler) http.Handler {
+func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, x509Source *workloadapi.X509Source, tratteriaSpiffeID spiffeid.ID, logger *zap.Logger) func(http.Handler) http.Handler {
+	tratteriaMtlsClient := http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsconfig.MTLSClientConfig(x509Source, x509Source, tlsconfig.AuthorizeID(tratteriaSpiffeID)),
+		},
+	}
+
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			requestDetails, err := getRequestDetails(r)
@@ -231,24 +235,9 @@ func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, httpClient *http.Client,
 
 			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-			ctx, cancel := context.WithTimeout(req.Context(), 5*time.Second)
-			defer cancel()
-
-			svid, err := spireJwtSource.FetchJWTSVID(ctx, jwtsvid.Params{
-				Audience: txnTokenServiceSpiffeID.String(),
-			})
+			resp, err := tratteriaMtlsClient.Do(req)
 			if err != nil {
-				logger.Error("Failed to fetch JWT-SVID.", zap.Error(err))
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-
-				return
-			}
-
-			req.Header.Set("Authorization", "Bearer "+svid.Marshal())
-
-			resp, err := httpClient.Do(req)
-			if err != nil {
-				logger.Error("Failed to request txn token from txn-token service.", zap.Error(err))
+				logger.Error("Failed to request txn token from tratteria.", zap.Error(err))
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 
 				return
@@ -256,7 +245,7 @@ func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, httpClient *http.Client,
 			defer resp.Body.Close()
 
 			if resp.StatusCode != http.StatusOK {
-				logger.Error("Received non-ok http status from txn-token service.", zap.Int("status", resp.StatusCode))
+				logger.Error("Received non-ok http status from tratteria service.", zap.Int("status", resp.StatusCode))
 
 				if resp.StatusCode == http.StatusForbidden {
 					http.Error(w, "Access Forbidden", http.StatusForbidden)
@@ -269,7 +258,7 @@ func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, httpClient *http.Client,
 
 			body, err := io.ReadAll(resp.Body)
 			if err != nil {
-				logger.Error("Failed to read the response from txn-token service", zap.Error(err))
+				logger.Error("Failed to read the response from tratteria", zap.Error(err))
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 				return
 			}
@@ -290,7 +279,7 @@ func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, httpClient *http.Client,
 			}
 
 			if token.AccessToken == "" {
-				logger.Error("Received empty access token from token service")
+				logger.Error("Received empty access token from tratteria.")
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 
 				return
