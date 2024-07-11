@@ -1,0 +1,15 @@
+apiVersion: tratteria.io/v1alpha1
+kind: TraT
+metadata:
+  name: stock-details-api-trat
+  namespace: alpha-stocks-dev
+spec:
+  endpoint: "/api/stocks/details/{#stockId}"
+  method: "GET"
+  purp: stock-details
+  azdMapping:
+    stockId:
+      required: true
+      value: "${stockId}"
+  services:
+    - name: stocks

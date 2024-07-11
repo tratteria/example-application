@@ -1,12 +1,12 @@
-cd alpha-stocks
+cd alpha-stocks-dev
 chmod +x destroy.sh
 ./destroy.sh
 cd ..
 
 
-cd tratteria/installation
+cd tconfigd/installation
 chmod +x uninstall.sh
-./uninstall.sh --no-spire
+./uninstall.sh
 cd ../..
 
 cd spire
