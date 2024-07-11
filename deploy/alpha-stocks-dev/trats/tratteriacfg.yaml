@@ -1,0 +1,27 @@
+apiVersion: tratteria.io/v1alpha1
+kind: TratteriaConfig
+metadata:
+  name: alpha-stocks-tratteriacfg
+  namespace: alpha-stocks-dev
+spec:
+  token:
+    issuer: "https://alphastocks.com/tratteria"
+    audience: "https://alphastocks.com/"
+    lifeTime: "15s"
+  subjectTokens:
+    OIDC:
+      clientId: alpha-stocks-client
+      providerURL: http://dex:5556/dex
+      subjectField: email
+    selfSigned:
+      validation: false
+      jwksEndpoint: "http://alphastocks.com/oidcprovider/.well-known/jwks.json"
+  accessEvaluationAPI:
+    enableAccessEvaluation: false
+    endpoint: "https://alphastocks.authzen.com/access/v1/evaluation"
+    authentication:
+      method: "Bearer"
+      token:
+        value: "${AUTHORIZATION_API_BEARER_TOKEN}"
+  tokenGenerationAuthorizedServiceIds:
+      - "spiffe://alphastocks.com/gateway"

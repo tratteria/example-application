@@ -1,0 +1,25 @@
+<<<<<<< Updated upstream:deploy/alpha-stocks/trats/stock-holdings-api.yaml
+# apiVersion: tratteria.io/v1alpha1
+# kind: TraT
+# metadata:
+#   name: stock-holdings-api-trat
+#   namespace: alpha-stocks
+# spec:
+#   endpoint: "/api/stocks/holdings"
+#   method: "GET"
+#   purp: stock-holdings
+#   services:
+#     - name: stocks
+=======
+apiVersion: tratteria.io/v1alpha1
+kind: TraT
+metadata:
+  name: stock-holdings-api-trat
+  namespace: alpha-stocks-dev
+spec:
+  endpoint: "/api/stocks/holdings"
+  method: "GET"
+  purp: stock-holdings
+  services:
+    - name: stocks
+>>>>>>> Stashed changes:deploy/alpha-stocks-dev/trats/stock-holdings-api.yaml

@@ -1,0 +1,13 @@
+enableTratInterception: "true" # Enable or disable incoming requests interception for TraT verification
+<<<<<<< Updated upstream:deploy/tratteria/installation/config.yaml
+agentApiPort: "9040" # Port number for the tratteria agent API
+agentInterceptorPort: "9050" # Port number for the tratteria agent incoming requests interceptor
+spiffeEndpointSocket: "unix:///run/spire/sockets/agent.sock" # Don't change this if you are using tconfigd SPIRE installation
+tconfigdSpiffeId: "spiffe://tratteria.io/tconfigd" # Don't change this if you are using tconfigd SPIRE installation
+=======
+spireAgentHostDir: "/run/spire/sockets" # Specify the host directory where the SPIRE agent's socket file resides
+tratteriaSpiffeId: "spiffe://alphastocks.com/tratteria" # Replace "trust-domain" with your trust domain
+agentHttpsApiPort: "9040" # Port number for the tratteria agent HTTPS APIs
+agentHttpApiPort: "9030" # Port number for the tratteria agent HTTP APIs
+agentInterceptorPort: "9050" # Port number for the tratteria agent incoming requests interceptor
+>>>>>>> Stashed changes:deploy/tconfigd/installation/config.yaml

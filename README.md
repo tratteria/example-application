@@ -71,46 +71,58 @@ As shown in the diagram above, the API Gateway integrates with the Tratteria ser
 
 ## Backend
 
+### Prerequisites
+
 Ensure Kubernetes is installed and correctly configured on your machine before executing these commands.
 
-- Navigate to the build directory and run the below command to build the services images:
+The application SPIRE installation is set up with "docker-desktop" as the cluster name. This is specific to the Kubernetes setup on Docker Desktop. If you are using a different Kubernetes cluster, adjust the SPIRE configurations to match your specific environment:
+
+- Navigate to the SPIRE configuration directory at `deploy/spire`.
+
+- Edit the configuration files to replace "docker-desktop" with your actual cluster name.
+
+- Review and modify other settings as needed to align with your cluster requirements.
+
+### Building Service Images
+
+Navigate to the build directory and run the below command to build the services images:
 
 ```bash
 ./build.sh
 ```
 
-- Navigate to the deployments/kubernetes directory and run the below command to deploy the services:
+### Deploying Services
+
+Navigate to the deployments/kubernetes directory and run the below command to deploy the services:
 
 ```bash
 ./deploy.sh
 ```
 
-- You can remove all generated Kubernetes resources using the command below:
+### Cleaning Up
+
+You can remove all generated Kubernetes resources using the command below:
 
 ```bash
 ./destroy.sh
 ```
 
-- If you have made changes to the code, you can re-execute `./deploy.sh` to apply those changes.
-
 ### OIDC Authentication via Dex
 
-The application uses Dex as its OIDC provider, configured at `deployment/kubernetes/configs/dex-config.yaml`. If you need to add clients, update secrets, or manage users, please update this file as necessary.
+The application uses Dex as its OIDC provider, configured at `deploy/alpha-stocks-dev/configs/dex-config.yaml`. If you need to add clients, update secrets, or manage users, please update this file as necessary.
 
 ### SPIRE Identity Management
 
-The application incorporates SPIRE(the SPIFFE Runtime Environment) for workload identity management, with configurations located at `deployment/kubernates/spire/`. To adjust service identities, modify configurations, or manage workload registrations, please refer to and update the appropriate files within the directory.
+The application incorporates SPIRE(the SPIFFE Runtime Environment) for workload identity management, with configurations located at `deploy/spire/`. To adjust service identities, modify configurations, or manage workload registrations, please refer to and update the appropriate files within the directory.
 
 
 ## Client(Frontend)
 
-- To start the client, navigate to the frontend directory and run:
+To start the client, navigate to the frontend directory and run:
 
 ```bash
 npm start
 ```
-
-- If you have made changes to the code, the changes are automatically applied and reflected in the client.
 
 For more detailed instructions refer to the service-specific README files in their respective directories.
 
