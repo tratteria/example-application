@@ -6,13 +6,13 @@ chmod +x install.sh
 cd ..
 
 if [ "$ENABLE_TRATS" = "true" ]; then
-    cd tratteria/installation
+    cd tconfigd/installation
     chmod +x install.sh
-    ./install.sh --no-spire
+    ./install.sh
     cd ../..
 fi
 
-cd alpha-stocks
+cd alpha-stocks-dev
 chmod +x deploy.sh
 ./deploy.sh
 cd ..

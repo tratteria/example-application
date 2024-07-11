@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tconfigd
+  namespace: tratteria-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tconfigd
+  template:
+    metadata:
+      labels:
+        app: tconfigd
+      namespace: tratteria-system
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: tconfigd-service-account
+      containers:
+        - image: tconfigd
+          name: tconfigd
+          args: ["/etc/tconfigd/config/config.yaml"]
+          imagePullPolicy: Never
+          env:
+            - name: SPIFFE_ENDPOINT_SOCKET
+              value: unix:///run/spire/sockets/agent.sock
+          ports:
+            - containerPort: 8443
+              protocol: TCP
+            - containerPort: 443
+              protocol: TCP
+          volumeMounts:
+            - name: tconfigd-config-volume
+              mountPath: "/etc/tconfigd/config"
+              readOnly: true
+            - mountPath: /run/spire/sockets
+              name: spire-agent-socket
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: tconfigd-config-volume
+          configMap:
+            name: config
+        - name: spire-agent-socket
+          hostPath:
+            path: /run/spire/sockets # Host directory where the SPIRE agent's socket resides; update this if different in your environment
+            type: Directory

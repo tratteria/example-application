@@ -44,7 +44,7 @@ done
 
 kubectl exec -n spire spire-server-0 -- \
     /opt/spire/bin/spire-server entry create \
-    -spiffeID spiffe://alphastocks.com/ns/spire/sa/spire-agent \
+    -spiffeID spiffe://dev.alphastocks.com/ns/spire/sa/spire-agent \
     -selector k8s_sat:cluster:docker-desktop \
     -selector k8s_sat:agent_ns:spire \
     -selector k8s_sat:agent_sa:spire-agent \
@@ -52,35 +52,35 @@ kubectl exec -n spire spire-server-0 -- \
 
 kubectl exec -n spire spire-server-0 -- \
     /opt/spire/bin/spire-server entry create \
-    -spiffeID spiffe://alphastocks.com/stocks \
-    -parentID spiffe://alphastocks.com/ns/spire/sa/spire-agent \
-    -selector k8s:ns:alpha-stocks \
+    -spiffeID spiffe://dev.alphastocks.com/stocks \
+    -parentID spiffe://dev.alphastocks.com/ns/spire/sa/spire-agent \
+    -selector k8s:ns:alpha-stocks-dev \
     -selector k8s:sa:stocks-service-account
 
 kubectl exec -n spire spire-server-0 -- \
     /opt/spire/bin/spire-server entry create \
-    -spiffeID spiffe://alphastocks.com/gateway \
-    -parentID spiffe://alphastocks.com/ns/spire/sa/spire-agent \
-    -selector k8s:ns:alpha-stocks \
+    -spiffeID spiffe://dev.alphastocks.com/gateway \
+    -parentID spiffe://dev.alphastocks.com/ns/spire/sa/spire-agent \
+    -selector k8s:ns:alpha-stocks-dev \
     -selector k8s:sa:gateway-service-account
 
 kubectl exec -n spire spire-server-0 -- \
     /opt/spire/bin/spire-server entry create \
-    -spiffeID spiffe://alphastocks.com/order \
-    -parentID spiffe://alphastocks.com/ns/spire/sa/spire-agent \
-    -selector k8s:ns:alpha-stocks \
+    -spiffeID spiffe://dev.alphastocks.com/order \
+    -parentID spiffe://dev.alphastocks.com/ns/spire/sa/spire-agent \
+    -selector k8s:ns:alpha-stocks-dev \
     -selector k8s:sa:order-service-account
 
 kubectl exec -n spire spire-server-0 -- \
     /opt/spire/bin/spire-server entry create \
-    -spiffeID spiffe://alphastocks.com/tratteria \
-    -parentID spiffe://alphastocks.com/ns/spire/sa/spire-agent \
-    -selector k8s:ns:alpha-stocks \
+    -spiffeID spiffe://dev.alphastocks.com/tratteria \
+    -parentID spiffe://dev.alphastocks.com/ns/spire/sa/spire-agent \
+    -selector k8s:ns:alpha-stocks-dev \
     -selector k8s:sa:tratteria-service-account
 
 kubectl exec -n spire spire-server-0 -- \
     /opt/spire/bin/spire-server entry create --dns tconfigd.tratteria-system.svc\
-    -spiffeID spiffe://alphastocks.com/tconfigd \
-    -parentID spiffe://alphastocks.com/ns/spire/sa/spire-agent \
+    -spiffeID spiffe://dev.alphastocks.com/tconfigd \
+    -parentID spiffe://dev.alphastocks.com/ns/spire/sa/spire-agent \
     -selector k8s:ns:tratteria-system \
     -selector k8s:sa:tconfigd-service-account
