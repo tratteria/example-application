@@ -4,7 +4,7 @@ metadata:
   name: tratteria
   namespace: alpha-stocks-dev  # Replace [your-namespace] with your Kubernetes namespace
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: tratteria
