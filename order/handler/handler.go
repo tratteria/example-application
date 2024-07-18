@@ -32,6 +32,14 @@ type OrderRequest struct {
 	Quantity  int               `json:"quantity"`
 }
 
+func (h *Handlers) HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	h.Logger.Info("Health check request received.")
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(`{"status":"healthy"}`))
+}
+
 func (h *Handlers) OrderHandler(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("Order request received.")
 

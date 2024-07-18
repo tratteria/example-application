@@ -17,10 +17,5 @@ envsubst < ./deployments/gateway-deployment.yaml | kubectl apply -f -
 
 if [ "$ENABLE_TRATS" = "true" ]; then
     kubectl apply -f tratteria/kubernetes
-fi
-
-
-if [ "$ENABLE_TRATS" = "true" ]; then
-    sleep 20
     kubectl apply -f trats
 fi
