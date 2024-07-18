@@ -7,6 +7,12 @@ import (
 	"github.com/spiffe/go-spiffe/v2/spiffeid"
 )
 
+func GetPublicEndpoints() []string {
+	return []string{
+		"/health",
+	}
+}
+
 func GetSpiffeAccessControlPolicies(orderConfig *config.OrderConfig) map[spiffeid.ID]map[string][]string {
 	return map[spiffeid.ID]map[string][]string{
 		orderConfig.SpiffeIDs.Gateway: {

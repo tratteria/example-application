@@ -86,6 +86,7 @@ func main() {
 }
 
 func (a *App) initializeRoutes(handlers *handler.Handlers) {
+	a.Router.HandleFunc("/health", handlers.HealthCheckHandler).Methods("GET")
 	a.Router.HandleFunc("/api/order", handlers.OrderHandler).Methods("POST")
 	a.Router.HandleFunc("/api/order/{id}", handlers.GetOrderDetailsHandler).Methods("GET")
 }

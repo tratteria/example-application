@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -14,10 +15,25 @@ import (
 )
 
 func getSpiffeMiddleware(stocksConfig *config.StocksConfig, spireJwtSource *workloadapi.JWTSource, logger *zap.Logger) func(http.Handler) http.Handler {
+	publicEndpoints := authz.GetPublicEndpoints()
 	policies := authz.GetSpiffeAccessControlPolicies(stocksConfig)
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			routePath, err := mux.CurrentRoute(r).GetPathTemplate()
+			if err != nil {
+				logger.Error("Error retrieving the route path template:", zap.Error(err))
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+
+				return
+			}
+
+			if slices.Contains(publicEndpoints, routePath) {
+				next.ServeHTTP(w, r)
+
+				return
+			}
+
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {
 				logger.Error("JWT-SVID token not provided.")
@@ -35,14 +51,6 @@ func getSpiffeMiddleware(stocksConfig *config.StocksConfig, spireJwtSource *work
 			}
 
 			logger.Info("Successfully authenticated a request.", zap.String("spiffeID", svid.ID.String()))
-
-			routePath, err := mux.CurrentRoute(r).GetPathTemplate()
-			if err != nil {
-				logger.Error("Error retrieving the route path template:", zap.Error(err))
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-
-				return
-			}
 
 			if !authz.IsSpiffeIDAuthorized(svid.ID, r.Method, routePath, policies) {
 				logger.Error("Unauthorized access attempt", zap.String("spiffeID", svid.ID.String()), zap.String("path", routePath), zap.String("method", r.Method))
