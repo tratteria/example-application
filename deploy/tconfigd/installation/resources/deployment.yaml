@@ -17,10 +17,9 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: tconfigd-service-account
       containers:
-        - image: tconfigd
+        - image: ghcr.io/tratteria/tconfigd:latest
           name: tconfigd
           args: ["/etc/tconfigd/config/config.yaml"]
-          imagePullPolicy: Never
           env:
             - name: SPIFFE_ENDPOINT_SOCKET
               value: unix:///run/spire/sockets/agent.sock

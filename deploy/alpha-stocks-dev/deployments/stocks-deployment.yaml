@@ -29,9 +29,8 @@ spec:
               value: spiffe://dev.alphastocks.com/order
             - name: STOCKS_SERVICE_SPIFFE_ID
               value: spiffe://dev.alphastocks.com/stocks
-          image: stocks
+          image: ghcr.io/tratteria/example-application/stocks:latest
           name: stocks
-          imagePullPolicy: Never
           ports:
             - containerPort: 8070
               protocol: TCP

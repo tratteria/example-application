@@ -42,9 +42,8 @@ spec:
               value: spiffe://dev.alphastocks.com/stocks
             - name: ENABLE_TRATS
               value: "${ENABLE_TRATS}"
-          image: gateway
+          image: ghcr.io/tratteria/example-application/gateway:latest
           name: gateway
-          imagePullPolicy: Never
           ports:
             - containerPort: 30000
               protocol: TCP
