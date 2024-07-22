@@ -15,25 +15,26 @@ staticClients:
   name: 'Alpha Stocks'
   secret: MV9zf+XnZvs/nJy4Z+ya7A== # Replace this value for your installation
 
+# The default password for all users below is password123
 enablePasswordDB: true
 staticPasswords:
 - email: "sherlock@detect.com"
-  hash: "$2a$12$Nir6h14f306ad8MPHX5y5ebQbceHTLiQDc7tNJxbi7xIxx/lPRPbm"
+  hash: "$2a$12$qzD.zI2dNelNr2JmUXwmgee2CaAleLtP5gjt4bXmAPLma4A/ALpza"
   username: "sherlock"
   userID: "0001"
 - email: "diana@amazonian.com"
-  hash: "$2a$12$x4IuJf8BHJHfVUmMYnrmluHvbDwkG3kwvJRHTC51i53Q6wY9G8oGm"
+  hash: "$2a$12$qzD.zI2dNelNr2JmUXwmgee2CaAleLtP5gjt4bXmAPLma4A/ALpza"
   username: "diana"
   userID: "0002"
 - email: "neo@matrix.com"
-  hash: "$2a$12$./youohaI/FGdj7yDxrFdOkWSSZXA0wKCUp0Zqdv.n5O0I5A2RoYu"
+  hash: "$2a$12$qzD.zI2dNelNr2JmUXwmgee2CaAleLtP5gjt4bXmAPLma4A/ALpza"
   username: "neo"
   userID: "0003"
 - email: "hermione@magic.com"
-  hash: "$2a$12$fVJV1/CGM9uvArSGDAT9SuggnxjiCq8UYvNsktzK1PIK9sGxvs2k."
+  hash: "$2a$12$qzD.zI2dNelNr2JmUXwmgee2CaAleLtP5gjt4bXmAPLma4A/ALpza"
   username: "hermione"
   userID: "0004"
 - email: "HAL9000@ai.com"
-  hash: "$2a$12$ap9d/drJC4G/wwVA4NaJIO74TXiyo7GPS2cK.mSKtiCzxBXLUBloC"
+  hash: "$2a$12$qzD.zI2dNelNr2JmUXwmgee2CaAleLtP5gjt4bXmAPLma4A/ALpza"
   username: "HAL9000"
   userID: "0005"
