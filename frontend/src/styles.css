@@ -1,3 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono&display=swap');
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+body.resize-active {
+  cursor: ns-resize !important;
+  user-select: none !important;
+}
+
+body.resize-active * {
+  cursor: ns-resize !important;
+  user-select: none !important;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     color: #333;

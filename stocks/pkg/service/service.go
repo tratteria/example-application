@@ -54,14 +54,10 @@ type UpdateDetails struct {
 }
 
 type Holding struct {
-	StockID              string  `json:"stockID"`
-	StockSymbol          string  `json:"stockSymbol"`
-	StockName            string  `json:"stockName"`
-	StockExchange        string  `json:"stockExchange"`
-	TotalAvailableShares int     `json:"totalAvailableShares"`
-	Quantity             int     `json:"quantity"`
-	CurrentPrice         float64 `json:"currentPrice"`
-	TotalValue           float64 `json:"totalValue"`
+	StockID     string  `json:"stockID"`
+	StockSymbol string  `json:"stockSymbol"`
+	Quantity    int     `json:"quantity"`
+	TotalValue  float64 `json:"totalValue"`
 }
 
 type Holdings struct {
@@ -215,7 +211,7 @@ func (s *Service) GetUserHoldings(username string) (Holdings, error) {
 	var holdings Holdings
 
 	sqlStatement := `
-	SELECT s.id, s.symbol, s.name, s.exchange, s.totalAvailableShares, us.quantity, s.currentPrice
+	SELECT s.id, s.symbol, us.quantity, s.currentPrice
 	FROM user_stocks us
 	INNER JOIN stocks s ON us.stockId = s.id
 	WHERE us.username = ?
@@ -234,14 +230,15 @@ func (s *Service) GetUserHoldings(username string) (Holdings, error) {
 
 	for rows.Next() {
 		var holding Holding
+		var currentPrice float64
 
-		if err := rows.Scan(&holding.StockID, &holding.StockSymbol, &holding.StockName, &holding.StockExchange, &holding.TotalAvailableShares, &holding.Quantity, &holding.CurrentPrice); err != nil {
-			s.Logger.Error("Error scaning holdings rows.", zap.Error(err))
+		if err := rows.Scan(&holding.StockID, &holding.StockSymbol, &holding.Quantity, &currentPrice); err != nil {
+			s.Logger.Error("Error scanning holdings rows.", zap.Error(err))
 
-			return Holdings{}, fmt.Errorf("error scaning holdings rows: %w", err)
+			return Holdings{}, fmt.Errorf("error scanning holdings rows: %w", err)
 		}
 
-		holding.TotalValue = float64(holding.Quantity) * holding.CurrentPrice
+		holding.TotalValue = float64(holding.Quantity) * currentPrice
 		totalValue += holding.TotalValue
 		holdings.Holdings = append(holdings.Holdings, holding)
 	}

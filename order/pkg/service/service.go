@@ -12,7 +12,6 @@ import (
 
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/common"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/config"
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/ordererrors"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/spiffe/go-spiffe/v2/svid/jwtsvid"
 	"github.com/spiffe/go-spiffe/v2/workloadapi"
@@ -157,32 +156,6 @@ func (s *Service) Order(ctx context.Context, username string, stockID int, order
 	if err != nil {
 		s.Logger.Error("Error registering an order transaction on the order database.", zap.Error(err))
 	}
-
-	return orderDetails, nil
-}
-
-func (s *Service) GetOrderDetails(username string, id string) (OrderDetails, error) {
-	var orderDetails OrderDetails
-
-	query := `SELECT order_id, stock_symbol, stock_name, stock_id, stock_exchange, stock_price, order_type, quantity, total_value FROM order_table WHERE order_id = ? and username = ?`
-	row := s.DB.QueryRow(query, id, username)
-
-	var operation string
-
-	err := row.Scan(&orderDetails.TransactionID, &orderDetails.StockSymbol, &orderDetails.StockName, &orderDetails.StockID, &orderDetails.StockExchange, &orderDetails.StockPrice, &operation, &orderDetails.Quantity, &orderDetails.TotalValue)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			s.Logger.Error("No order found with the given id for the user.", zap.String("order-id", id), zap.String("user-name", username), zap.Error(err))
-
-			return OrderDetails{}, ordererrors.ErrOrderNotFound
-		}
-
-		s.Logger.Error("Error querying order details from the database.", zap.Error(err))
-
-		return OrderDetails{}, err
-	}
-
-	orderDetails.Operation = OrderType(operation)
 
 	return orderDetails, nil
 }

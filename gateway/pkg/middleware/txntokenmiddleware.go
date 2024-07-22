@@ -287,6 +287,13 @@ func GetTxnTokenMiddleware(txnTokenServiceURL *url.URL, x509Source *workloadapi.
 
 			r.Header.Set("Txn-Token", token.AccessToken)
 
+
+
+			// ⚠️ Setting the "Txn-Token" header in the response as well. This is done only for this example application to demonstrate
+			// TraTs generation in the application's UI interactively. There is no reason to do this in a real application, and it should not be
+			// done as it can be a security threat. ⚠️
+			w.Header().Set("Txn-Token", token.AccessToken)
+
 			next.ServeHTTP(w, r)
 		})
 	}

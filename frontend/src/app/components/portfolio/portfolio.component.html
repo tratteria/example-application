@@ -3,24 +3,24 @@
     <img src="assets/alpha-logo.png" alt="Alpha Logo" class="portfolio-logo" />
   </div>
   <div *ngIf="holdings.length > 0; else errorOrEmpty" class="holdings">
-    <div *ngFor="let stock of holdings" class="holding" (click)="toggleStock(stock.stockID)">
+    <div *ngFor="let holding of holdings" class="holding" (click)="toggleStock(holding.stockID)">
       <div class="holding-summary">
-        <span class="stock-symbol"><strong>{{ stock.stockSymbol }}</strong></span>
-        <span class="stock-quantity">{{ stock.quantity }} shares</span>
-        <span class="holding-value">Value: ${{ stock.totalValue | number:'1.2-2' }}</span>
+        <span class="stock-symbol"><strong>{{ holding.stockSymbol }}</strong></span>
+        <span class="stock-quantity">{{ holding.quantity }} shares</span>
+        <span class="holding-value">Value: ${{ holding.totalValue | number:'1.2-2' }}</span>
       </div>
-      <div *ngIf="openStates.get(stock.stockID)" class="stock-details">
+      <div *ngIf="openStates.get(holding.stockID) && selectedStock" class="stock-details">
         <div class="details-content">
-          <p><strong>Name:</strong> {{ stock.stockName }}</p>
-          <p><strong>Exchange:</strong> {{ stock.stockExchange }}</p>
-          <p><strong>Current Price:</strong> ${{ stock.currentPrice | number:'1.2-2' }}</p>
-          <p><strong>Total Available Shares:</strong> {{ stock.totalAvailableShares }}</p>
+          <p><strong>Name:</strong> {{ selectedStock.name }}</p>
+          <p><strong>Exchange:</strong> {{ selectedStock.exchange }}</p>
+          <p><strong>Current Price:</strong> ${{ selectedStock.currentPrice | number:'1.2-2' }}</p>
+          <p><strong>Total Available Shares:</strong> {{ selectedStock.totalAvailableShares }}</p>
         </div>
         <div class="button-container">
-          <button class="button buy-button" [disabled]="stock.totalAvailableShares === 0" (click)="onBuyStock(stock.stockID)">
-            <i class="fa fa-shopping-cart"></i> Buy
+          <button class="button buy-button" [disabled]="selectedStock.totalAvailableShares === 0" (click)="onBuyStock(holding.stockID)">
+            <i class="fa fa-shopping-cart"></i> Buy More
           </button>
-          <button class="button sell-button" [disabled]="stock.quantity === 0" (click)="onSellStock(stock.stockID)">
+          <button class="button sell-button" [disabled]="holding.quantity === 0" (click)="onSellStock(holding.stockID)">
             <i class="fa fa-money-bill-alt"></i> Sell
           </button>
         </div>
