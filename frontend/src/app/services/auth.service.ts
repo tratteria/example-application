@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, tap, Observable, throwError} from 'rxjs';
 import { environment } from '../../environments/environment';
+import { TxnTokenService } from './txn-token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,10 @@ export class AuthService {
   private dexClientId = environment.dexClientId
   private isAuthenticated = new BehaviorSubject<boolean>(this.isLoggedIn());
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private txnTokenService: TxnTokenService
+  ) { }
 
   get authState(): Observable<boolean> {
     return this.isAuthenticated.asObservable();
@@ -35,6 +39,7 @@ export class AuthService {
         console.log('Logout successful');
         localStorage.removeItem('isLoggedIn');
         this.isAuthenticated.next(false);
+        this.txnTokenService.clearTxnToken();
       }),
       catchError(error => {
         console.error('Logout failed', error.message);

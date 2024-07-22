@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StockService } from '../../services/stock.service';
 import { Stock } from '../../models/stock.model';
 import { OrderService } from '../../services/order.service';
+import { TransactionDetails } from '../../models/transaction-details.model';
 
 @Component({
   selector: 'app-order',
@@ -66,12 +67,13 @@ export class OrderComponent implements OnInit {
       event.target.value = '';
     }
   }
-  
+
   placeOrder(): void {
     if (this.stock && this.stock.id && this.action) {
       this.orderService.placeOrder(this.stock.id, this.action, this.quantity).subscribe({
-        next: (response) => {
-          this.router.navigate(['/order/transaction'], { queryParams: { transaction_id: response.transactionID } });
+        next: (response: TransactionDetails) => {
+          sessionStorage.setItem('transactionDetails', JSON.stringify(response));
+          this.router.navigate(['/order/transaction']);
         },
         error: (error) => {
           console.error('Error placing order:', error);

@@ -16,8 +16,4 @@ export class OrderService {
     const orderDetails = { stockId, orderType, quantity };
     return this.http.post<TransactionDetails>(this.orderAPIURL, orderDetails);
   }
-
-  getTransactionDetails(transactionId: string): Observable<TransactionDetails> {
-    return this.http.get<TransactionDetails>(`${this.orderAPIURL}/${transactionId}`);
-  }
 }

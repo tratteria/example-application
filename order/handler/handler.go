@@ -3,13 +3,10 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/common"
-	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/ordererrors"
 	"github.com/SGNL-ai/TraTs-Demo-Svcs/order/pkg/service"
-	"github.com/gorilla/mux"
 
 	"go.uber.org/zap"
 )
@@ -81,44 +78,4 @@ func (h *Handlers) OrderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.Logger.Info("Order request processed successfully.")
-}
-
-func (h *Handlers) GetOrderDetailsHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.Header.Get("alpha-stock-user-name")
-	if username == "" {
-		h.Logger.Error("Unable to extract username from the header of the order request.")
-		http.Error(w, "Unable to extract username from the header", http.StatusInternalServerError)
-
-		return
-	}
-
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	h.Logger.Info("A get-order-details request received.", zap.String("id", id))
-
-	stock, err := h.Service.GetOrderDetails(username, id)
-	if err != nil {
-		if errors.Is(err, ordererrors.ErrOrderNotFound) {
-			h.Logger.Error("Order not found", zap.String("id", id))
-			http.Error(w, "Order not found", http.StatusNotFound)
-
-			return
-		}
-
-		h.Logger.Error("Error encountered in a get-order-details request.", zap.String("id", id))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-
-	if err := json.NewEncoder(w).Encode(stock); err != nil {
-		h.Logger.Error("Failed to encode response of a get-order-details request.", zap.Error(err))
-
-		return
-	}
-
-	h.Logger.Info("Get-order-details request processed successfully.", zap.String("id", id))
 }

@@ -19,3 +19,5 @@ if [ "$ENABLE_TRATS" = "true" ]; then
     kubectl apply -f tratteria/kubernetes
     kubectl apply -f trats
 fi
+
+./wait_for_services.sh
