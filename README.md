@@ -83,14 +83,6 @@ The application SPIRE installation is set up with "docker-desktop" as the cluste
 
 - Review and modify other settings as needed to align with your cluster requirements.
 
-### Building Service Images
-
-Navigate to the `build` directory and run the below command to build the services images:
-
-```bash
-./build.sh
-```
-
 ### Deploying Services
 
 Navigate to the `deploy` directory and run the below command to deploy the services:
