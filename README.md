@@ -110,11 +110,21 @@ The application incorporates SPIRE(the SPIFFE Runtime Environment) for workload 
 
 ## Client(Frontend)
 
-To start the client, navigate to the `frontend` directory and run:
+To start the client, navigate to the `frontend` directory and follow these steps:
+
+### Install dependencies:
+
+```bash
+npm install
+```
+
+### Start the frontend server:
 
 ```bash
 npm start
 ```
+
+&nbsp;
 
 For more detailed instructions refer to the service-specific README files in their respective directories.
 
