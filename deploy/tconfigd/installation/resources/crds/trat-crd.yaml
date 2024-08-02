@@ -47,6 +47,8 @@ spec:
                         type: string
                       endpoint:
                         type: string
+                      method:
+                        type: string
                       azdMapping:
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
