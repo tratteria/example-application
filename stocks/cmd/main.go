@@ -22,6 +22,7 @@ type App struct {
 	DB             *sql.DB
 	Config         *config.StocksConfig
 	SpireJwtSource *workloadapi.JWTSource
+	HTTPClient     *http.Client
 	Logger         *zap.Logger
 }
 
@@ -60,10 +61,11 @@ func main() {
 		DB:             db,
 		Config:         appConfig,
 		SpireJwtSource: spireJwtSource,
+		HTTPClient:     &http.Client{},
 		Logger:         logger,
 	}
 
-	middleware := middleware.GetMiddleware(appConfig, app.SpireJwtSource, app.Logger)
+	middleware := middleware.GetMiddleware(appConfig, app.SpireJwtSource, app.HTTPClient, app.Logger)
 
 	app.Router.Use(middleware)
 

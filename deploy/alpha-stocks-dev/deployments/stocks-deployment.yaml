@@ -4,7 +4,7 @@ metadata:
   name: stocks
   namespace: alpha-stocks-dev
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: stocks
@@ -12,7 +12,7 @@ spec:
     metadata:
       annotations:
         tratteria/inject-sidecar: "true"
-        tratteria/service-port: "8070"
+        tratteria/agent-mode: "delegation"
       labels:
         app: stocks
     spec:
@@ -29,6 +29,8 @@ spec:
               value: spiffe://dev.alphastocks.com/order
             - name: STOCKS_SERVICE_SPIFFE_ID
               value: spiffe://dev.alphastocks.com/stocks
+            - name: TRAT_VERIFY_ENDPOINT
+              value: http://localhost:9030/verify-trat
           image: ghcr.io/tratteria/example-application/stocks:latest
           name: stocks
           ports:

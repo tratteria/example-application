@@ -94,9 +94,9 @@ Update the `config.yaml` file to match your specific deployment settings:
     - **Description**: Host directory where the SPIRE agent's socket resides. Update this value if it is different in your SPIRE installation.
   - `tratteriaSpiffeId`: `"spiffe://[your-trust-domain]/tratteria"`
     - **Description**: SPIFFE ID used to register [tratteria service](https://github.com/tratteria/tratteria), an open source Transaction Tokens (TraTs) Service.
-  - `agentHttpApiPort`: "`9030`" 
-    - **Description**: Port number for the tratteria agent HTTP APIs. Do not change this unless you have some specific need.
-  - `agentInterceptorPort`: "`9050`" 
+  - `agentApiPort`: "`9030`"
+    - **Description**: Port number for the tratteria agent APIs. Do not change this unless you have some specific need.
+  - `agentInterceptorPort`: "`9050`"
     - **Description**: The port number for the tratteria agent's incoming requests interceptor. Do not change this unless you have some specific need.
 
 
