@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 	"time"
 
@@ -19,7 +20,8 @@ type spiffeIDs struct {
 }
 
 type StocksConfig struct {
-	SpiffeIDs *spiffeIDs
+	SpiffeIDs          *spiffeIDs
+	TratVerifyEndpoint *url.URL
 }
 
 func GetAppConfig() *StocksConfig {
@@ -29,6 +31,7 @@ func GetAppConfig() *StocksConfig {
 			Order:   spiffeid.RequireFromString(getEnv("ORDER_SERVICE_SPIFFE_ID")),
 			Stocks:  spiffeid.RequireFromString(getEnv("STOCKS_SERVICE_SPIFFE_ID")),
 		},
+		TratVerifyEndpoint: parseURL(getEnv("TRAT_VERIFY_ENDPOINT")),
 	}
 }
 
@@ -51,4 +54,13 @@ func getEnv(key string) string {
 	}
 
 	return value
+}
+
+func parseURL(rawurl string) *url.URL {
+	parsedURL, err := url.Parse(rawurl)
+	if err != nil {
+		panic(fmt.Sprintf("Error parsing URL %s: %v", rawurl, err))
+	}
+
+	return parsedURL
 }

@@ -19,10 +19,12 @@ func CombineMiddleware(middleware ...func(http.Handler) http.Handler) func(http.
 	}
 }
 
-func GetMiddleware(stocksConfig *config.StocksConfig, spireJwtSource *workloadapi.JWTSource, logger *zap.Logger) func(http.Handler) http.Handler {
+func GetMiddleware(stocksConfig *config.StocksConfig, spireJwtSource *workloadapi.JWTSource, httpClient *http.Client, logger *zap.Logger) func(http.Handler) http.Handler {
 	middlewareList := []func(http.Handler) http.Handler{}
 
 	middlewareList = append(middlewareList, getSpiffeMiddleware(stocksConfig, spireJwtSource, logger))
+
+	middlewareList = append(middlewareList, getTraTVerifierMiddleware(stocksConfig.TratVerifyEndpoint, httpClient, logger))
 
 	return CombineMiddleware(middlewareList...)
 }

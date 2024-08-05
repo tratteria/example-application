@@ -230,6 +230,7 @@ func (s *Service) GetUserHoldings(username string) (Holdings, error) {
 
 	for rows.Next() {
 		var holding Holding
+
 		var currentPrice float64
 
 		if err := rows.Scan(&holding.StockID, &holding.StockSymbol, &holding.Quantity, &currentPrice); err != nil {
