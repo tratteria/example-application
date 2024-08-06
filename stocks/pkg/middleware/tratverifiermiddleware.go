@@ -12,7 +12,7 @@ import (
 )
 
 type VerifyTraTRequest struct {
-	Path            string          `json:"endpoint"`
+	Path            string          `json:"path"`
 	Method          string          `json:"method"`
 	QueryParameters json.RawMessage `json:"queryParameters"`
 	Headers         json.RawMessage `json:"headers"`

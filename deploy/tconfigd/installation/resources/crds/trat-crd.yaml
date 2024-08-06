@@ -29,7 +29,7 @@ spec:
             spec:
               type: object
               properties:
-                endpoint:
+                path:
                   type: string
                 method:
                   type: string
@@ -45,14 +45,14 @@ spec:
                     properties:
                       name:
                         type: string
-                      endpoint:
+                      path:
                         type: string
                       method:
                         type: string
                       azdMapping:
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
-              required: ["endpoint", "method", "services"]
+              required: ["path", "method", "services"]
             status:
               type: object
               properties:
