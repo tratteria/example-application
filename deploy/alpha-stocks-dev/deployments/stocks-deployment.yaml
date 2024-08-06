@@ -36,6 +36,13 @@ spec:
           ports:
             - containerPort: 8070
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8070
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
           volumeMounts:
             - mountPath: /var/lib/stocks-db
               name: stocks-db
