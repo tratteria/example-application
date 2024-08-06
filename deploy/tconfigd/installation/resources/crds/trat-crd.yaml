@@ -52,7 +52,10 @@ spec:
                       azdMapping:
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
-              required: ["path", "method", "services"]
+                accessEvaluation:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+              required: ["path", "method", "purp", "services"]
             status:
               type: object
               properties:

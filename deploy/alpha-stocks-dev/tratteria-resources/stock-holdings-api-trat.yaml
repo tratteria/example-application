@@ -9,3 +9,8 @@ spec:
   purp: stock-holdings
   services:
     - name: stocks
+  accessEvaluation:
+    subject:
+      id: "${subject_token.email}"
+    action:
+      name: "stock-holdings"
