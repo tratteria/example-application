@@ -31,7 +31,7 @@ const (
 )
 
 type RequestDetails struct {
-	Path            string            `json:"endpoint"`
+	Path            string            `json:"path"`
 	Method          common.HttpMethod `json:"method"`
 	QueryParameters json.RawMessage   `json:"queryParameters"`
 	Headers         json.RawMessage   `json:"headers"`

@@ -4,7 +4,7 @@ metadata:
   name: stock-trade-api-trat
   namespace: alpha-stocks-dev
 spec:
-  endpoint: "/api/order"
+  path: "/api/order"
   method: "POST"
   purp: stock-trade
   azdMapping:
@@ -20,4 +20,4 @@ spec:
   services:
     - name: order
     - name: stocks
-      endpoint: "/internal/stocks"
+      path: "/internal/stocks"
