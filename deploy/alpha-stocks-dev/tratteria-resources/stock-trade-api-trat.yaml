@@ -21,3 +21,10 @@ spec:
     - name: order
     - name: stocks
       path: "/internal/stocks"
+  accessEvaluation:
+    subject:
+      id: "${subject_token.email}"
+    action:
+      name: "${body.orderType}"
+    resource:
+      stockId: "${body.stockId}"

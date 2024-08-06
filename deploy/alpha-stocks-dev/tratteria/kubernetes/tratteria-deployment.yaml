@@ -33,6 +33,8 @@ spec:
               value: tconfigd.tratteria-system.svc.cluster.local:8443
             - name: SPIFFE_ENDPOINT_SOCKET
               value: unix:///run/spire/sockets/agent.sock
+            - name: AUTHORIZATION_API_BEARER_TOKEN
+              value: alphaStocksAuthzenBearerToken
             - name: MY_NAMESPACE
               valueFrom:
                 fieldRef:

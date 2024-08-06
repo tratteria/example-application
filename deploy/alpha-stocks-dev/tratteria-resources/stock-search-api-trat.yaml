@@ -13,3 +13,10 @@ spec:
       value: "${queryParameters.query}"
   services:
     - name: stocks
+  accessEvaluation:
+    subject:
+      id: "${subject_token.email}"
+    action:
+      name: "stock-search"
+    resource:
+      query: "${queryParameters.query}"
