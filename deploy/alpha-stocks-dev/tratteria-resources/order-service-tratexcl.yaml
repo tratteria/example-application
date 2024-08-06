@@ -1,0 +1,10 @@
+apiVersion: tratteria.io/v1alpha1
+kind: TraTExclusion
+metadata:
+  name: order-service-tratexcl
+  namespace: alpha-stocks-dev
+spec:
+  service: order
+  endpoints:
+    - path: "/health"
+      method: "GET"

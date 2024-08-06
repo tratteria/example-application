@@ -17,7 +17,7 @@ envsubst < ./deployments/gateway-deployment.yaml | kubectl apply -f -
 
 if [ "$ENABLE_TRATS" = "true" ]; then
     kubectl apply -f tratteria/kubernetes
-    kubectl apply -f trats
+    kubectl apply -f tratteria-resources
 fi
 
 ./wait_for_services.sh

@@ -1,0 +1,68 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tratexclusions.tratteria.io
+spec:
+  group: tratteria.io
+  names:
+    kind: TraTExclusion
+    plural: tratexclusions
+    singular: tratexclusion
+    listKind: TraTExclusionList
+    shortNames:
+      - tratexcl
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              required: ["service", "endpoints"]
+              properties:
+                service:
+                  type: string
+                endpoints:
+                  type: array
+                  items:
+                    type: object
+                    required: ["path", "method"]
+                    properties:
+                      path:
+                        type: string
+                      method:
+                        type: string
+            status:
+              type: object
+              properties:
+                status:
+                  type: string
+                  default: "PENDING"
+                lastErrorMessage:
+                  type: string
+                  nullable: true
+                retries:
+                  type: integer
+                  default: 0
+      additionalPrinterColumns:
+        - name: "Service"
+          type: "string"
+          jsonPath: ".spec.service"
+        - name: "Status"
+          type: "string"
+          jsonPath: ".status.status"
+        - name: "Age"
+          type: "date"
+          jsonPath: ".metadata.creationTimestamp"
+      subresources:
+        status: {}
