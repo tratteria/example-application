@@ -34,7 +34,7 @@ spec:
             - name: SPIFFE_ENDPOINT_SOCKET
               value: unix:///run/spire/sockets/agent.sock
             - name: AUTHORIZATION_API_BEARER_TOKEN
-              value: alphaStocksAuthzenBearerToken
+              value: alphaStocksAuthzenBearerToken # A dummy value for the AlphaStocks Authzen Bearer Token
             - name: MY_NAMESPACE
               valueFrom:
                 fieldRef:
