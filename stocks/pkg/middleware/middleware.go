@@ -24,7 +24,9 @@ func GetMiddleware(stocksConfig *config.StocksConfig, spireJwtSource *workloadap
 
 	middlewareList = append(middlewareList, getSpiffeMiddleware(stocksConfig, spireJwtSource, logger))
 
-	middlewareList = append(middlewareList, getTraTVerifierMiddleware(stocksConfig.TratVerifyEndpoint, httpClient, logger))
+	if stocksConfig.EnableTrats {
+		middlewareList = append(middlewareList, getTraTVerifierMiddleware(stocksConfig.TratVerifyEndpoint, httpClient, logger))
+	}
 
 	return CombineMiddleware(middlewareList...)
 }
