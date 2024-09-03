@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       annotations:
-        tratteria/inject-sidecar: "true"
+        tratteria/inject-sidecar: "${ENABLE_TRATS}"
         tratteria/service-port: "8090"
       labels:
         app: order
