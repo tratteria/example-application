@@ -78,6 +78,6 @@ func getBoolFromEnv(key string) bool {
 	if err != nil {
 		panic(fmt.Sprintf("Invalid boolean value for %s: %s", key, value))
 	}
-	
+
 	return parsed
 }
