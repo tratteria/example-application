@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/spiffe/go-spiffe/v2/spiffeid"
@@ -22,6 +23,7 @@ type spiffeIDs struct {
 type StocksConfig struct {
 	SpiffeIDs          *spiffeIDs
 	TratVerifyEndpoint *url.URL
+	EnableTrats        bool
 }
 
 func GetAppConfig() *StocksConfig {
@@ -32,6 +34,7 @@ func GetAppConfig() *StocksConfig {
 			Stocks:  spiffeid.RequireFromString(getEnv("STOCKS_SERVICE_SPIFFE_ID")),
 		},
 		TratVerifyEndpoint: parseURL(getEnv("TRAT_VERIFY_ENDPOINT")),
+		EnableTrats:        getBoolFromEnv("ENABLE_TRATS"),
 	}
 }
 
@@ -63,4 +66,18 @@ func parseURL(rawurl string) *url.URL {
 	}
 
 	return parsedURL
+}
+
+func getBoolFromEnv(key string) bool {
+	value, exists := os.LookupEnv(key)
+	if !exists {
+		panic(fmt.Sprintf("%s environment variable not set", key))
+	}
+
+	parsed, err := strconv.ParseBool(value)
+	if err != nil {
+		panic(fmt.Sprintf("Invalid boolean value for %s: %s", key, value))
+	}
+	
+	return parsed
 }

@@ -31,6 +31,8 @@ spec:
               value: spiffe://dev.alphastocks.com/stocks
             - name: TRAT_VERIFY_ENDPOINT
               value: http://localhost:9030/verify-trat
+            - name: ENABLE_TRATS
+              value: "${ENABLE_TRATS}"
           image: ghcr.io/tratteria/example-application/stocks:latest
           name: stocks
           ports:
